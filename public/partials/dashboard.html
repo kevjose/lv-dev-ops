@@ -1,0 +1,19 @@
+<div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper" style="margin-top: -25px;">
+    <ul class="sidebar">
+      <li class="sidebar-main">
+        <a ng-click="toggleSidebar()">
+          Dashboard
+          <span class="menu-icon glyphicon glyphicon-transfer"></span>
+        </a>
+      </li>
+      <li class="sidebar-title"><span>NAVIGATION</span></li>
+      <li class="sidebar-list">
+        <a ui-sref="dashboard.profile">My Profile <span class="menu-icon fa fa-user"></span></a>
+      </li>
+    </ul>
+  </div>
+  <!-- End Sidebar -->
+  <div ui-view="dashboardContent"></div>
+</div>

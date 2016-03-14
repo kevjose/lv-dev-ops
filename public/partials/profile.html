@@ -1,0 +1,35 @@
+<div class="container col-md-12">
+
+  <div class="panel panel-default panel-body" style="min-height: 400px;">
+    <legend><i class="ion-clipboard"></i> Edit My Profile</legend>
+    <div class="loading" ng-show="isProfileLoading">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+
+    <div ng-hide="isProfileLoading">
+      <form name="profileForm" method="post" ng-submit="updateProfile()" novalidate>
+        <div class="form-group">
+          <label class="control-label">Profile Picture</label>
+          <img class="profile-picture" ng-src="{{user.picture || 'https://placehold.it/100x100'}}">
+        </div>
+        <div class="form-group">
+          <label class="control-label"><i class="ion-person"></i> Display Name</label>
+          <input type="text" name="name" class="form-control" ng-model="user.displayName" required/>
+
+          <p ng-show="profileForm.name.$invalid && !profileForm.name.$pristine" class="text-danger">You name
+              is
+              required.</p>
+        </div>
+        <div class="form-group">
+          <label class="control-label"><i class="ion-at"></i> Email Address</label>
+          <input type="email" class="form-control" ng-model="user.email" ng-disabled="true"/>
+        </div>
+        <button class="btn btn-lg btn-success" ng-disabled="profileForm.$invalid">Update Information</button>
+      </form>
+    </div>
+  </div>
+
+</div>
