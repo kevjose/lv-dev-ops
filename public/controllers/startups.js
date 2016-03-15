@@ -1,7 +1,20 @@
 angular.module('MyApp')
-  .controller('StartupsCtrl', function ($scope, $auth, toastr, Account, $uibModal) {
-    $scope.isProfileLoading = true;
+  .controller('StartupsCtrl', function ($scope, toastr, $uibModal, StartupService) {
+    $scope.isStartupsFetching = true;
     $scope.startup = {};
+    $scope.fetchStartups = function(){
+      StartupService.getStartups()
+      .then(function (response) {
+          toastr.success('Startup fetched successfully');
+          $scope.isStartupsFetching = false;
+          $scope.startups = response.data;
+      })
+      .catch(function (response) {
+          toastr.clear();
+          toastr.error(response.data.message, response.status);
+      });
+    }
+    $scope.fetchStartups();
     $scope.open = function () {
 
       var modalInstance = $uibModal.open({
@@ -16,13 +29,12 @@ angular.module('MyApp')
       });
 
       modalInstance.result.then(function (result) {
-        console.log(result);
-        //$scope.startups.psuh(result);
+        $scope.startups.push(result);
       });
     };
   })
 
-  .controller('AddStartupModalCtrl', function ($scope, $uibModalInstance) {
+  .controller('AddStartupModalCtrl', function ($scope, toastr, $uibModalInstance, StartupService) {
 
     $scope.startup ={};
     $scope.loadSectors = function() {
@@ -42,7 +54,15 @@ angular.module('MyApp')
         $scope.startup.sectors.push($scope.sectors[i].name)
       }
       
-      $uibModalInstance.close($scope.startup);
+      StartupService.createStartup($scope.startup)
+      .then(function (response) {
+          toastr.success('Startup created successfully');
+          $uibModalInstance.close(response.data);
+      })
+      .catch(function (response) {
+          toastr.clear();
+          toastr.error(response.data.message, response.status);
+      });
     };
 
     $scope.cancel = function () {

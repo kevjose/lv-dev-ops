@@ -5,32 +5,37 @@
     <div class="text-right">
       <button type="button" class="btn btn-info btn-outline" ng-click="open()">Add new startup! <i class="fa fa-plus"></i></button>
     </div>
-    <div class="loading" ng-show="isProfileLoading">
+    <div class="loading" ng-show="isStartupsFetching">
       <div class="loading-bar"></div>
       <div class="loading-bar"></div>
       <div class="loading-bar"></div>
       <div class="loading-bar"></div>
     </div>
 
-    <div ng-hide="isProfileLoading">
-      <!-- <form name="profileForm" method="post" ng-submit="updateProfile()" novalidate>
-        <div class="form-group">
-          <ng-letter-avatar  alphabetcolors data="Lv" my-text="hello {{ user.email }}" ng-model="user.email"></ng-letter-avatar>
-        </div>
-        <div class="form-group">
-          <label class="control-label"><i class="ion-person"></i> Display Name</label>
-          <input type="text" name="name" class="form-control" ng-model="user.displayName" required/>
-      
-          <p ng-show="profileForm.name.$invalid && !profileForm.name.$pristine" class="text-danger">You name
-              is
-              required.</p>
-        </div>
-        <div class="form-group">
-          <label class="control-label"><i class="ion-at"></i> Email Address</label>
-          <input type="email" class="form-control" ng-model="user.email" ng-disabled="true"/>
-        </div>
-        <button class="btn btn-lg btn-success" ng-disabled="profileForm.$invalid">Update Information</button>
-      </form> -->
+    <div ng-hide="isStartupsFetching">
+      <pre>{{startups}}</pre>
+      <div class = "table-responsive">
+        <table class = "table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Sectors</th>
+            </tr>
+          </thead>
+            
+          <tbody>
+            <tr ng-repeat="startup in startups">
+              <td>{{startup.name}}</td>
+              <td>{{startup.description}}</td>
+              <td>{{startup.location}}</td>
+              <td>{{startup.sectors.join()}}</td>
+            </tr>
+          </tbody>
+            
+        </table>
+      </div>    
     </div>
   </div>
 

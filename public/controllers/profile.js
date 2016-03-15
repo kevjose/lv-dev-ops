@@ -1,6 +1,7 @@
 angular.module('MyApp')
   .controller('ProfileCtrl', function ($scope, $auth, toastr, Account) {
     $scope.isProfileLoading = true;
+    $scope.user = {displayName : '', email : ''};
     $scope.getProfile = function () {
       Account.getProfile()
         .then(function (response) {

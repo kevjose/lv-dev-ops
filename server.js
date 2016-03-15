@@ -39,6 +39,21 @@ userSchema.methods.comparePassword = function (password, done) {
 };
 
 var User = mongoose.model('User', userSchema);
+
+
+/*
+Startup Schema
+*/
+var startupSchema = new mongoose.Schema({
+    name: {type: String},
+    createdById: String,
+    createdAt: {type: Date, default: Date.now},
+    description: {type: String},
+    location: String,
+    sectors: [String]
+});
+var Startup = mongoose.model('Startup', startupSchema);
+
 mongoose.connect(config.MONGO_URI);
 mongoose.connection.on('error', function (err) {
     console.log('Error: Could not connect to MongoDB. Did you forget to run `mongod`?'.red);
@@ -46,7 +61,7 @@ mongoose.connection.on('error', function (err) {
 
 var app = express();
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 8080);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -170,7 +185,34 @@ app.post('/auth/signup', function (req, res) {
     });
 });
 
+/**
+ * Create Startup
+ */
+app.post('/api/startup/create', ensureAuthenticated, function (req, res) {
+  var startup = new Startup({
+    name: req.body.name,
+    createdById: req.user,
+    description: req.body.description,
+    location: req.body.location,
+    sectors: req.body.sectors
+  });
+  startup.save(function (err, startup) {
+    if (err)
+      return res.status(400).send(err);
+    return res.send(startup);
+  });
+});
 
+/**
+ * Get Startups 
+ */
+app.get('/api/startups', ensureAuthenticated, function (req, res) {
+  Startup.find(function (err, startups) {
+    if (err)
+      return res.status(400).send({message: 'no startups found'});
+    return res.send(startups);
+  });
+});
 
 /*
  |--------------------------------------------------------------------------
