@@ -1,6 +1,7 @@
 /*
  * A simple Gravatar Directive
  * @example
+ * 'https://secure.gravatar.com/avatar/' + hash + '?s=200&d=mm'
  *   <gravatar-image email="test@email.com" size="50"></gravatar-image>
  */
 angular.module('MyApp')
@@ -9,7 +10,7 @@ angular.module('MyApp')
     restrict: 'AE',
     replace: true,
     required: 'email',
-    template: '<img ng-src="https://www.gravatar.com/avatar/{{hash}}?s={{size}}&d=identicon" />',
+    template: '<img ng-src="https://secure.gravatar.com/avatar/{{hash}}?s={{size}}&d=wavatar" />',
     link: function (scope, element, attrs) {
       attrs.$observe('email', function (value) {
         if(!value) { return; }

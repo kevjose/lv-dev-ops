@@ -13,11 +13,11 @@
     </div>
 
     <div ng-hide="isStartupsFetching">
-      <pre>{{startups}}</pre>
       <div class = "table-responsive">
         <table class = "table">
           <thead>
             <tr>
+              <th>Options</th>
               <th>Name</th>
               <th>Description</th>
               <th>Location</th>
@@ -27,6 +27,13 @@
             
           <tbody>
             <tr ng-repeat="startup in startups">
+              <td>
+                <button 
+                  class="btn btn-xs" 
+                  ng-click="gotoStartup(startup._id)">
+                  <i class="fa fa-external-link"></i>
+                </button><!-- {{startup._id}} -->
+              </td>
               <td>{{startup.name}}</td>
               <td>{{startup.description}}</td>
               <td>{{startup.location}}</td>

@@ -20,16 +20,16 @@ var userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', function (next) {
-    var user = this;
-    if (!user.isModified('password')) {
-        return next();
-    }
-    bcrypt.genSalt(10, function (err, salt) {
-        bcrypt.hash(user.password, salt, function (err, hash) {
-            user.password = hash;
-            next();
-        });
+  var user = this;
+  if (!user.isModified('password')) {
+    return next();
+  }
+  bcrypt.genSalt(10, function (err, salt) {
+    bcrypt.hash(user.password, salt, function (err, hash) {
+      user.password = hash;
+      next();
     });
+  });
 });
 
 userSchema.methods.comparePassword = function (password, done) {
@@ -45,14 +45,29 @@ var User = mongoose.model('User', userSchema);
 Startup Schema
 */
 var startupSchema = new mongoose.Schema({
-    name: {type: String},
-    createdById: String,
-    createdAt: {type: Date, default: Date.now},
-    description: {type: String},
-    location: String,
-    sectors: [String]
+  name: {type: String},
+  createdById: String,
+  createdAt: {type: Date, default: Date.now},
+  description: {type: String},
+  location: String,
+  sectors: [String],
+  alexaDetails : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Alexa'}]
+});
+
+var alexaSchema = new mongoose.Schema({
+  globalRank: Number,
+  countryRank: {
+    rank: Number,
+    country: String
+  },
+  engagement: {
+    bounceRate: Number,
+    dailyPageViewPerVisitor: Number,
+    dailyTimeOnSite: Number 
+  }
 });
 var Startup = mongoose.model('Startup', startupSchema);
+var Alexa = mongoose.model('Alexa', alexaSchema);
 
 mongoose.connect(config.MONGO_URI);
 mongoose.connection.on('error', function (err) {
@@ -132,16 +147,16 @@ app.get('/api/me', ensureAuthenticated, function (req, res) {
  |--------------------------------------------------------------------------
  */
 app.put('/api/me', ensureAuthenticated, function (req, res) {
-    User.findById(req.user, function (err, user) {
-        if (!user) {
-            return res.status(400).send({message: 'User not found'});
-        }
-        user.displayName = req.body.displayName || user.displayName;
-        user.email = req.body.email || user.email;
-        user.save(function (err) {
-            res.status(200).end();
-        });
-    });
+  var $set = { $set: {} };
+  if(req.body.displayName)
+    $set.$set['displayName'] = req.body.displayName;
+  if(req.body.email)
+    $set.$set['email'] = req.body.email;
+  User.update({_id:req.user}, $set ,function(err){
+    if(err)
+      return res.send(err)
+    res.status(200).end();
+  });
 });
 
 
@@ -214,6 +229,63 @@ app.get('/api/startups', ensureAuthenticated, function (req, res) {
   });
 });
 
+/**
+ *Get startups with selected fields and slice array elements
+ */
+app.get('/api/strt',function(req,res){
+  var startupProjection = {
+    name: true,
+    sectors:{$slice: -2} 
+  };
+
+  Startup.find({}, startupProjection, function (err, startups) {
+      if (err) return res.send(err);
+      res.send(startups);
+  }); 
+});
+
+/**
+ * Fetch startup based on _id
+ */
+app.get('/api/startups/:id', ensureAuthenticated, function (req, res) {
+  Startup.findOne({_id: req.params.id}, function (err, startup) {
+    if (err)
+      return res.status(400).send({message: 'no such startup found'});
+    return res.send(startup);
+  });
+});
+
+/**
+ * Update startup
+ */
+app.put('/api/startup', ensureAuthenticated, function (req, res) {
+  var $set = { $set: {} };
+  if(req.body.name)
+    $set.$set['name'] = req.body.name;
+  if(req.body.description)
+    $set.$set['description'] = req.body.description;
+  if(req.body.location)
+    $set.$set['location'] = req.body.location;
+  if(req.body.sectors)
+    $set.$set['sectors'] = req.body.sectors;
+  Startup.update({_id:req.body.id}, $set ,function(err){
+    if(err)
+      return res.status(400).send({message: 'Update Failed'});
+    res.status(200).send({message: 'Update values:'+JSON.stringify($set.$set)});
+  });
+}); 
+
+/**
+ * Get Alexa Data 
+ */
+app.get('/api/startup/alexa',function (req, res){
+  var alexaData = require('alexa-traffic-rank');
+  alexaData.AlexaWebData("letsventure.com", function(err, result) {
+    if(err)
+      res.send(err);
+    res.send(result);
+  })
+});
 /*
  |--------------------------------------------------------------------------
  | Start the Server

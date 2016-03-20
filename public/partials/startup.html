@@ -1,0 +1,74 @@
+<div class="container col-md-12">
+
+  <div class="panel panel-default panel-body" style="min-height: 400px;">
+    <legend><i class="ion-clipboard"></i> &nbsp;Startup Details </legend>
+    <div class="loading" ng-show="isStartupFetching">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+
+    <div ng-hide="isStartupFetching" class="col-md-6">
+      <div class="form-group">
+        <label class="control-label">Startup Name</label>
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model="selectedStartup.name">
+          <span class="input-group-addon cursor" 
+            ng-click ="updateStartup('name', selectedStartup.name)" >
+            <i class="fa fa-check"></i>
+          </span>
+          <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">Startup Description</label>
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model="selectedStartup.description">
+          <span class="input-group-addon cursor" 
+            ng-click ="updateStartup('description', selectedStartup.description)" >
+            <i class="fa fa-check"></i>
+          </span>
+          <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label">Startup Location</label>
+        <div class="input-group">
+          <input type="text" class="form-control" ng-model="selectedStartup.location">
+          <span class="input-group-addon cursor" 
+            ng-click ="updateStartup('location', selectedStartup.location)" >
+            <i class="fa fa-check"></i>
+          </span>
+          <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+        </div>
+      </div>
+
+       <div class="form-group">
+        <label class="control-label">
+        Sectors this startup belongs to</label>
+        <tags-input ng-model="selectedStartup.sectors" display-property="name"
+          placeholder="Add a sector" 
+          replace-spaces-with-dashes="true"
+          add-from-autocomplete-only="false">
+          <auto-complete 
+            source="loadSectors()" 
+            min-length="0"
+            debounce-delay="0"
+            max-results-to-show="10">
+          </auto-complete>
+        </tags-input>
+        <span class="btn btn-xs btn-default cursor" 
+          ng-click ="updateStartup('sectors', selectedStartup.sectors)" >
+          <i class="fa fa-check"></i>
+        </span> &nbsp;
+        <span class="btn btn-xs btn-default cursor"><i class="fa fa-times"></i></span>
+        <small>*<em>To add new sector not in list typr the sector and put a comma (,)</em></small>
+      </div>
+
+    </div>
+  </div>
+
+</div>
