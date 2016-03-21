@@ -1,0 +1,49 @@
+<div class="container col-md-12">
+
+  <div class="panel panel-default panel-body" style="min-height: 400px;">
+    <legend><i class="ion-clipboard"></i> Startup List</legend>
+    <div class="text-right">
+      <button type="button" class="btn btn-info btn-outline" ng-click="open()">Add new startup! <i class="fa fa-plus"></i></button>
+    </div>
+    <div class="loading" ng-show="isStartupsFetching">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+
+    <div ng-hide="isStartupsFetching">
+      <div class = "table-responsive">
+        <table class = "table">
+          <thead>
+            <tr>
+              <th>Options</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Location</th>
+              <th>Sectors</th>
+            </tr>
+          </thead>
+            
+          <tbody>
+            <tr ng-repeat="startup in startups">
+              <td>
+                <button 
+                  class="btn btn-xs" 
+                  ng-click="gotoStartup(startup._id)">
+                  <i class="fa fa-external-link"></i>
+                </button><!-- {{startup._id}} -->
+              </td>
+              <td>{{startup.name}}</td>
+              <td>{{startup.description}}</td>
+              <td>{{startup.location}}</td>
+              <td>{{startup.sectors.join()}}</td>
+            </tr>
+          </tbody>
+            
+        </table>
+      </div>    
+    </div>
+  </div>
+
+</div>

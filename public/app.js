@@ -1,4 +1,4 @@
-angular.module('MyApp', ['ngResource', 'ngMessages', 'ngAnimate', 'toastr', 'ui.router', 'satellizer', 'ui.bootstrap'])
+angular.module('MyApp', ['ngResource', 'ngMessages', 'ngAnimate', 'toastr', 'ui.router', 'satellizer', 'ui.bootstrap', 'ngTagsInput' ])
 
 .config(function ($stateProvider, $urlRouterProvider, $authProvider) {
   $stateProvider
@@ -47,6 +47,26 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ngAnimate', 'toastr', 'ui.
         }
       }
     })
+    .state('dashboard.startups', {
+      url: '/startups',
+
+      views: {
+        'dashboardContent': {
+          templateUrl: 'partials/startups-table.html',
+          controller: 'StartupsCtrl'
+        }
+      }
+    })
+    .state('dashboard.startup', {
+      url: '/startup/:id',
+
+      views: {
+        'dashboardContent': {
+          templateUrl: 'partials/startup.html',
+          controller: 'FetchedStartupCtrl'
+        }
+      }
+    });
     /*.state('dashboard.mytravels', {
       url: '/mytravels',
 

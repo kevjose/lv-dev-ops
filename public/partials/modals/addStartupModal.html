@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h3 class="modal-title">Add a new startup</h3>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label class="control-label"><i class="ion-at"></i> Startup Name</label>
+    <input type="text" class="form-control" ng-model="startup.name"/>
+  </div>
+  <div class="form-group">
+    <label class="control-label"><i class="fa fa-info-circle"></i> Startup description</label>
+    <input type="text" class="form-control" ng-model="startup.description"/>
+  </div>
+  <div class="form-group">
+    <label class="control-label"><i class="fa fa-thumb-tack"></i> Startup location</label>
+    <input type="text" class="form-control" ng-model="startup.location"/>
+  </div>
+  <div class="form-group">
+    <label class="control-label">
+    <i class="fa fa-deviantart"></i> Sectors this startup belongs to</label>
+    <tags-input ng-model="sectors" display-property="name"
+      placeholder="Add a sector" 
+      replace-spaces-with-dashes="true"
+      add-from-autocomplete-only="false">
+      <auto-complete 
+        source="loadSectors()" 
+        min-length="0"
+        debounce-delay="0"
+        max-results-to-show="10">
+      </auto-complete>
+    </tags-input>
+    <small>*<em>To add new sector not in list typr the sector and put a comma (,)</em></small>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+  <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

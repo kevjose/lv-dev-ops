@@ -5,7 +5,7 @@ angular.module('MyApp')
                 .then(function () {
                     toastr.clear();
                     toastr.success('You have successfully signed in');
-                    $location.path('/dashboard/mytravels/upcoming');
+                    $location.path('/dashboard/startups');
                 })
                 .catch(function (response) {
                     toastr.clear();
@@ -17,7 +17,7 @@ angular.module('MyApp')
                 .then(function () {
                     toastr.clear();
                     toastr.success('You have successfully signed in with ' + provider);
-                    $location.path('/dashboard/mytravels/upcoming');
+                    $location.path('/dashboard/startups');
                 })
                 .catch(function (response) {
                     toastr.clear();
