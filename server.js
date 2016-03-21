@@ -51,23 +51,72 @@ var startupSchema = new mongoose.Schema({
   description: {type: String},
   location: String,
   sectors: [String],
-  alexaDetails : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Alexa'}]
+  twitter_handle: String,
+  twitterInfo: [{ 
+    name: String,
+    location: String,
+    description: String,
+    twitterImage: String,
+    url: String,
+    followersCount: Number,
+    friendsCount: Number,
+    listedCount: Number,
+    createdAt: Date,
+    favouritesCount: Number,
+    statusesCount: Number,
+    lang: String,
+    fetchedOn: {
+      type: Date, default: Date.now
+    }
+  }],
+  websiteUrl: String,
+  alexaInfo: [{
+    globalRank: String,
+    countryRank: {
+      rank: String,
+      country: String
+    },
+    engagement: {
+      bounceRate: String,
+      dailyPageViewPerVisitor: String,
+      dailyTimeOnSite: String 
+    },
+    fetchedOn: {
+      type: Date, default: Date.now
+    }
+  }],
+  facebookHandle: String,
+  facebookInfo: [{
+    likes: String,
+    about: String,
+    category: String,
+    link: String,
+    name: String,
+    talking_about_count: String,
+    username: String,
+    website: String,
+    were_here_count: String,
+    fetchedOn: {
+      type: Date, default: Date.now
+    }
+  }],
+  googlePlayHandle: String,
+  googlePlayInfo: [{
+    title: String,
+    url: String,
+    icon: String,
+    minInstalls: Number,
+    maxInstalls: Number,
+    score: Number,
+    histogram: {},
+    fetchedOn: {
+      type: Date, default: Date.now
+    }
+  }]
 });
 
-var alexaSchema = new mongoose.Schema({
-  globalRank: Number,
-  countryRank: {
-    rank: Number,
-    country: String
-  },
-  engagement: {
-    bounceRate: Number,
-    dailyPageViewPerVisitor: Number,
-    dailyTimeOnSite: Number 
-  }
-});
+
 var Startup = mongoose.model('Startup', startupSchema);
-var Alexa = mongoose.model('Alexa', alexaSchema);
 
 mongoose.connect(config.MONGO_URI);
 mongoose.connection.on('error', function (err) {
@@ -222,7 +271,13 @@ app.post('/api/startup/create', ensureAuthenticated, function (req, res) {
  * Get Startups 
  */
 app.get('/api/startups', ensureAuthenticated, function (req, res) {
-  Startup.find(function (err, startups) {
+  var startupProjection = {
+    name: true,
+    description: true,
+    location: true,
+    sectors:true 
+  };
+  Startup.find({}, startupProjection, function (err, startups) {
     if (err)
       return res.status(400).send({message: 'no startups found'});
     return res.send(startups);
@@ -230,25 +285,16 @@ app.get('/api/startups', ensureAuthenticated, function (req, res) {
 });
 
 /**
- *Get startups with selected fields and slice array elements
- */
-app.get('/api/strt',function(req,res){
-  var startupProjection = {
-    name: true,
-    sectors:{$slice: -2} 
-  };
-
-  Startup.find({}, startupProjection, function (err, startups) {
-      if (err) return res.send(err);
-      res.send(startups);
-  }); 
-});
-
-/**
  * Fetch startup based on _id
  */
 app.get('/api/startups/:id', ensureAuthenticated, function (req, res) {
-  Startup.findOne({_id: req.params.id}, function (err, startup) {
+  var startupProjection = {
+    twitterInfo:{$slice: -1},
+    alexaInfo: {$slice: -1},
+    facebookInfo: {$slice: -1},
+    googlePlayInfo: {$slice: -1}
+  };
+  Startup.findOne({_id: req.params.id}, startupProjection, function (err, startup) {
     if (err)
       return res.status(400).send({message: 'no such startup found'});
     return res.send(startup);
@@ -268,6 +314,14 @@ app.put('/api/startup', ensureAuthenticated, function (req, res) {
     $set.$set['location'] = req.body.location;
   if(req.body.sectors)
     $set.$set['sectors'] = req.body.sectors;
+  if(req.body.twitter_handle)
+    $set.$set['twitter_handle'] = req.body.twitter_handle;
+  if(req.body.websiteUrl)
+    $set.$set['websiteUrl'] = req.body.websiteUrl;
+  if(req.body.facebookHandle)
+    $set.$set['facebookHandle'] = req.body.facebookHandle;
+  if(req.body.googlePlayHandle)
+    $set.$set['googlePlayHandle'] = req.body.googlePlayHandle;
   Startup.update({_id:req.body.id}, $set ,function(err){
     if(err)
       return res.status(400).send({message: 'Update Failed'});
@@ -276,16 +330,155 @@ app.put('/api/startup', ensureAuthenticated, function (req, res) {
 }); 
 
 /**
- * Get Alexa Data 
+ * Update twitter Info
  */
-app.get('/api/startup/alexa',function (req, res){
-  var alexaData = require('alexa-traffic-rank');
-  alexaData.AlexaWebData("letsventure.com", function(err, result) {
-    if(err)
-      res.send(err);
-    res.send(result);
-  })
+
+var Twitter = require('twitter-node-client').Twitter;
+var twitterConfig = {
+    "consumerKey": "OP1bjc2rD1Rg1kbkmpkVn6qri",
+    "consumerSecret": "36k2UR5uCTNDZA8Rp5igXwMrqSY7lz2KW7wE5UCFQrgjpaUuKa",
+    "accessToken": "2478478806-SrKSO0CQtHMgvmQ9Z4RFeEivmMqAQMBfykuqqJq",
+    "accessTokenSecret": "aPMD1YqzFiQpnfTeO5LcQuX7b4hVf75uylVufAQkQDGl3"
+}
+var twitter = new Twitter(twitterConfig);
+  
+app.put('/api/twitter/details', ensureAuthenticated ,function(req,res){
+  twitter.getUser({ screen_name: req.body.twitter_handle, include_entities: false},function(err){
+    return res.send(err);
+  },function(data){
+    data = JSON.parse(data);
+    var twitterInfo = {
+      "name": data.name,
+      "location": data.location,
+      "description": data.description,
+      "twitterImage": data.profile_image_url_https,
+      "url": data.url,
+      "followersCount": data.followers_count,
+      "friendsCount": data.friends_count,
+      "listedCount": data.listed_count,
+      "createdAt": data.created_at,
+      "favouritesCount": data.favourites_count,
+      "statusesCount": data.statuses_count,
+      "lang": data.lang,
+      "fetchedOn": Date.now()
+    }
+    Startup.findByIdAndUpdate(
+     req.body.id,
+     { $push: {"twitterInfo": twitterInfo}},
+     {  safe: true, upsert: true},
+      function(err, model) {
+        if(err){
+          return res.send(err);
+        }
+        return res.send(twitterInfo);
+      }
+    );
+  });
 });
+
+/**
+ * Update Alexa Data 
+ */
+var alexaData = require('alexa-traffic-rank');
+app.put('/api/alexa/details', ensureAuthenticated, function(req, res){
+  alexaData.AlexaWebData(req.body.websiteUrl, function(err, result) {
+    if(err)
+      return res.send(err);
+    Startup.findById(req.body.id, function (err, startup) {
+      if(err)
+        return res.send(err);
+      result.fetchedOn = Date.now() 
+      startup.alexaInfo.push({ 
+        globalRank: result.globalRank, 
+        countryRank: {
+          rank: result.countryRank.rank,
+          country: result.countryRank.country
+        },
+        engagement: {
+          bounceRate: result.engagement.bounceRate,
+          dailyPageViewPerVisitor: result.engagement.dailyPageViewPerVisitor,
+          dailyTimeOnSite: result.engagement.dailyTimeOnSite 
+        },
+        fetchedOn: result.fetchedOn
+      });
+      startup.save(function(err, startup){
+        if(err) 
+          return res.send(err)
+        return res.send(result);
+      });
+    })
+
+  });
+}); 
+
+/**
+ * Update Facebook Details
+ */
+app.put('/api/facebook/details', ensureAuthenticated, function(req, res){
+  var detailsUrl = "https://graph.facebook.com/"+req.body.facebookHandle+"?access_token=472415586283791|a8922a99c7584e780bf09bcb789172e3&fields=likes,about,birthday,category,link,name,talking_about_count,username,website,were_here_count";
+  request.get({url: detailsUrl, json: true},function(err, response, data){
+    if (err)
+      return res.send(err) 
+    var facebookInfo = {
+      likes: data.likes,
+      about: data.about,
+      category: data.category,
+      link: data.link,
+      name: data.name,
+      talking_about_count: data.talking_about_count,
+      username: data.username,
+      website: data.website,
+      were_here_count: data.were_here_count,
+      fetchedOn: Date.now()
+    }
+    Startup.findByIdAndUpdate(
+     req.body.id,
+     { $push: {"facebookInfo": facebookInfo}},
+     {  safe: true, upsert: true},
+      function(err, model) {
+        if(err){
+          return res.send(err);
+        }
+        return res.send(facebookInfo);
+      }
+    );
+  });
+}); 
+
+/**
+ * Update goolge play Info
+ */
+var gplay = require('google-play-scraper');
+app.put('/api/google-play/details', ensureAuthenticated, function(req, res){
+  gplay.app({appId: req.body.googlePlayHandle})
+  .then(function(app){
+    var googlePlayInfo = {
+      title: app.title,
+      url: app.url,
+      icon: app.icon,
+      minInstalls: app.minInstalls,
+      maxInstalls: app.maxInstalls,
+      score: app.score,
+      histogram:app.histogram,
+      fetchedOn: Date.now()
+    }
+    Startup.findByIdAndUpdate(
+     req.body.id,
+     { $push: {"googlePlayInfo": googlePlayInfo}},
+     { safe: true, upsert: true},
+      function(err, model) {
+        if(err){
+          return res.send(err);
+        }
+        return res.send(googlePlayInfo);
+      }
+    );
+  })
+  .catch(function(e){
+    return res.send(e);
+  });
+});
+
 /*
  |--------------------------------------------------------------------------
  | Start the Server

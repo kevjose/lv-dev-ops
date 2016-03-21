@@ -12,6 +12,18 @@ angular.module('MyApp')
       },
       updateStartup: function(data){
         return $http.put('/api/startup', data);
+      },
+      twitterDetailsUpdate: function(data){
+        return $http.put('/api/twitter/details', data); 
+      },
+      alexaDetailsUpdate: function(data){
+        return $http.put('/api/alexa/details', data);
+      },
+      facebookDetailsUpdate: function(data){
+        return $http.put('/api/facebook/details', data);
+      },
+      googlePlayDetailsUpdate: function(data){
+        return $http.put('/api/google-play/details', data);
       }
 
       /*getProfile: function() {

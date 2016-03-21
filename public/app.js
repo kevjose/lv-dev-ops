@@ -88,7 +88,7 @@ angular.module('MyApp', ['ngResource', 'ngMessages', 'ngAnimate', 'toastr', 'ui.
       templateUrl: 'partials/mytravels-past.html'
     });*/
 
-  //$urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/');
 
    
 

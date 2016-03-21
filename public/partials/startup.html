@@ -8,66 +8,330 @@
       <div class="loading-bar"></div>
       <div class="loading-bar"></div>
     </div>
+    
+    <div ng-hide="isStartupFetching" class="col-md-12">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="control-label">Startup Name</label>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="selectedStartup.name">
+            <span class="input-group-addon cursor" 
+              ng-click ="updateStartup('name', selectedStartup.name)" >
+              <i class="fa fa-check"></i>
+            </span>
+            <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </div>
+        </div>
 
-    <div ng-hide="isStartupFetching" class="col-md-6">
-      <div class="form-group">
-        <label class="control-label">Startup Name</label>
-        <div class="input-group">
-          <input type="text" class="form-control" ng-model="selectedStartup.name">
-          <span class="input-group-addon cursor" 
-            ng-click ="updateStartup('name', selectedStartup.name)" >
+        <div class="form-group">
+          <label class="control-label">Startup Description</label>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="selectedStartup.description">
+            <span class="input-group-addon cursor" 
+              ng-click ="updateStartup('description', selectedStartup.description)" >
+              <i class="fa fa-check"></i>
+            </span>
+            <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">Startup Location</label>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="selectedStartup.location">
+            <span class="input-group-addon cursor" 
+              ng-click ="updateStartup('location', selectedStartup.location)" >
+              <i class="fa fa-check"></i>
+            </span>
+            <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">
+          Sectors this startup belongs to</label>
+          <tags-input ng-model="selectedStartup.sectors" display-property="name"
+            placeholder="Add a sector" 
+            replace-spaces-with-dashes="true"
+            add-from-autocomplete-only="false">
+            <auto-complete 
+              source="loadSectors()" 
+              min-length="0"
+              debounce-delay="0"
+              max-results-to-show="10">
+            </auto-complete>
+          </tags-input>
+          <span class="btn btn-xs btn-default cursor" 
+            ng-click ="updateStartup('sectors', selectedStartup.sectors)" >
             <i class="fa fa-check"></i>
-          </span>
-          <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </span> &nbsp;
+          <span class="btn btn-xs btn-default cursor"><i class="fa fa-times"></i></span>
+          <small>*<em>To add new sector not in list typr the sector and put a comma (,)</em></small>
+        </div>
+      </div>  
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="control-label">Startup twitter handle</label>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="selectedStartup.twitter_handle">
+            <span class="input-group-addon cursor" 
+              ng-click ="updateStartup('twitter_handle', selectedStartup.twitter_handle)" >
+              <i class="fa fa-check"></i>
+            </span>
+            <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">Startup website URL</label>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="selectedStartup.websiteUrl">
+            <span class="input-group-addon cursor" 
+              ng-click ="updateStartup('websiteUrl', selectedStartup.websiteUrl)" >
+              <i class="fa fa-check"></i>
+            </span>
+            <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">Startup facebook handle</label>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="selectedStartup.facebookHandle">
+            <span class="input-group-addon cursor" 
+              ng-click ="updateStartup('facebookHandle', selectedStartup.facebookHandle)" >
+              <i class="fa fa-check"></i>
+            </span>
+            <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">Startup google play handle</label>
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="selectedStartup.googlePlayHandle">
+            <span class="input-group-addon cursor" 
+              ng-click ="updateStartup('googlePlayHandle', selectedStartup.googlePlayHandle)" >
+              <i class="fa fa-check"></i>
+            </span>
+            <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+          </div>
+        </div>
+
+      </div>  
+    </div>
+
+    <div ng-hide="isStartupFetching" class="col-md-12">
+      <!-- Twitter Info -->
+      <div class="col-md-6">
+        
+        <div class="card">
+          <div class="loading" ng-show="isTwitterInfoFetching">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
+          <div ng-hide="isTwitterInfoFetching">
+            <div class="avatar">
+              <img src="{{selectedStartup.twitterInfo[0].twitterImage}}" alt="" />
+            </div>
+            <div class="content">
+              <p>
+                <i class="fa fa-user"></i>&nbsp;{{selectedStartup.twitterInfo[0].name}}
+                &nbsp;&nbsp;
+                <i class="fa fa-map-marker"></i>&nbsp;{{selectedStartup.twitterInfo[0].location}}
+              </p>
+              <div class="col-md-12 text-center" style="margin-left:4%;">
+                <div class="col-md-4">
+                  <div class="circle">
+                    {{abbrNum(selectedStartup.twitterInfo[0].favouritesCount,1)}}
+                  </div>
+                  <p>Favorites Count</p>
+                </div>
+                <div class="col-md-4">
+                  <div class="circle">
+                    {{abbrNum(selectedStartup.twitterInfo[0].friendsCount,1)}}
+                  </div>
+                  <p>Friends Count</p>
+                </div>
+                <div class="col-md-4">
+                  <div class="circle">
+                    {{abbrNum(selectedStartup.twitterInfo[0].followersCount,1)}}
+                  </div>
+                  <p>Followers Count</p>
+                </div>
+              </div>
+              <p> Last fetched on 
+              {{selectedStartup.twitterInfo[0].fetchedOn | date:'dd-MMM-yyyy HH:mm:ss'}}</p>
+              <p>
+                <button type="button" class="btn btn-link" 
+                  ng-click="twitterDetailsUpdate(selectedStartup.twitter_handle)">
+                  <i class="fa fa-paper-plane"></i> 
+                  Fetch/ Update twitter info
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Alexa Info -->
+      <div class="col-md-6">
+
+        <div class="card">
+          <div class="loading" ng-show="isAlexaInfoFetching">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
+          <div class="content" ng-hide="isAlexaInfoFetching">
+            <p><strong>Global Rank: </strong>{{selectedStartup.alexaInfo[0].globalRank}}</p>
+            <p>
+              <strong>Country: </strong>{{selectedStartup.alexaInfo[0].countryRank.country}} &nbsp;&nbsp;
+              <strong>Rank: </strong> 
+              {{selectedStartup.alexaInfo[0].countryRank.rank}}
+            </p>
+            <div class="col-md-12">
+              <div class="col-md-4 text-center">
+                <div class="circle text-center">
+                  {{selectedStartup.alexaInfo[0].engagement.bounceRate}}
+                </div>
+                <p>Bounce Rate</p>
+              </div>
+              <div class="col-md-4 text-center">
+                <div class="circle text-center">
+                  {{selectedStartup.alexaInfo[0].engagement.dailyPageViewPerVisitor}}
+                </div>
+                <p>Daily Page View/Visitor</p>
+              </div>
+              <div class="col-md-4 text-center">
+                <div class="circle text-center">
+                  {{selectedStartup.alexaInfo[0].engagement.dailyTimeOnSite}}
+                </div>
+                <p>Daily Time on Site</p>
+              </div>
+            </div>
+            <p> Last fetched on 
+              {{selectedStartup.alexaInfo[0].fetchedOn | date:'dd-MMM-yyyy HH:mm:ss'}}
+            <p>
+              <button type="button" class="btn btn-link" 
+                ng-click="alexaDetailsUpdate(selectedStartup.websiteUrl)">
+                <i class="fa fa-paper-plane"></i> 
+                Fetch/ Update alexa info
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="clearfix"></div>
+      <br><br>
+
+      <div class="col-md-6">
+        
+        <div class="card">
+          <div class="loading" ng-show="isFacebookInfoFetching">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
+          <div ng-hide="isFacebookInfoFetching">
+            <div class="content">
+              <p>
+                <strong>Name: </strong>{{selectedStartup.facebookInfo[0].name}}
+              </p>
+              <p>
+                <strong>Category: </strong> {{selectedStartup.facebookInfo[0].category}}
+              </p>
+              <div class="col-md-12">
+                <div class="col-md-4">
+                  <div class="circle text-center">
+                    {{abbrNum(selectedStartup.facebookInfo[0].likes,1)}}
+                  </div>
+                  <p>Likes Count</p>
+                </div>
+                <div class="col-md-4">
+                  <div class="circle text-center">
+                    {{abbrNum(selectedStartup.facebookInfo[0].talking_about_count,1)}}
+                  </div>
+                  <p>Talking about Count</p>
+                </div>
+                <div class="col-md-4">
+                  <div class="circle text-center">
+                    {{abbrNum(selectedStartup.facebookInfo[0].were_here_count,1)}}
+                  </div>
+                  <p>Where here Count</p>
+                </div>
+              </div>
+              <p> Last fetched on 
+              {{selectedStartup.facebookInfo[0].fetchedOn | date:'dd-MMM-yyyy HH:mm:ss'}}</p>
+              <p>
+                <button type="button" class="btn btn-link" 
+                  ng-click="facebookDetailsUpdate(selectedStartup.facebookHandle)">
+                  <i class="fa fa-paper-plane"></i> 
+                  Fetch/ Update facebook info
+                </button>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label class="control-label">Startup Description</label>
-        <div class="input-group">
-          <input type="text" class="form-control" ng-model="selectedStartup.description">
-          <span class="input-group-addon cursor" 
-            ng-click ="updateStartup('description', selectedStartup.description)" >
-            <i class="fa fa-check"></i>
-          </span>
-          <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
+      <!-- Play Store Info --> 
+      <div class="col-md-6">
+        
+        <div class="card">
+          <div class="loading" ng-show="isGooglePlayInfoFetching">
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+            <div class="loading-bar"></div>
+          </div>
+          <div ng-hide="isGooglePlayInfoFetching">
+            <div class="avatar">
+              <img src="{{selectedStartup.googlePlayInfo[0].icon}}" alt="" />
+            </div>
+            <div class="content">
+              <p>
+                <i class="fa fa-user"></i>&nbsp;{{selectedStartup.googlePlayInfo[0].title}}
+              </p>
+              <div class="col-md-12 text-center" style="margin-left:4%;">
+                <div class="col-md-4">
+                  <div class="circle">
+                    {{abbrNum(selectedStartup.googlePlayInfo[0].minInstalls,1)}}
+                  </div>
+                  <p>Minimum Installs</p>
+                </div>
+                <div class="col-md-4">
+                  <div class="circle">
+                    {{abbrNum(selectedStartup.googlePlayInfo[0].maxInstalls,1)}}
+                  </div>
+                  <p>Maximum Installs</p>
+                </div>
+                <div class="col-md-4">
+                  <div class="circle">
+                    {{selectedStartup.googlePlayInfo[0].score}}
+                  </div>
+                  <p>Score</p>
+                </div>
+              </div>
+              <p> Last fetched on 
+              {{selectedStartup.googlePlayInfo[0].fetchedOn | date:'dd-MMM-yyyy HH:mm:ss'}}</p>
+              <p>
+              <p>Rating Chart: {{selectedStartup.googlePlayInfo[0].histogram}} </p>
+                <button type="button" class="btn btn-link" 
+                  ng-click="googlePlayDetailsUpdate(selectedStartup.googlePlayHandle)">
+                  <i class="fa fa-paper-plane"></i> 
+                  Fetch/ Update google-paly info
+                </button>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div class="form-group">
-        <label class="control-label">Startup Location</label>
-        <div class="input-group">
-          <input type="text" class="form-control" ng-model="selectedStartup.location">
-          <span class="input-group-addon cursor" 
-            ng-click ="updateStartup('location', selectedStartup.location)" >
-            <i class="fa fa-check"></i>
-          </span>
-          <span class="input-group-addon cursor"><i class="fa fa-times"></i></span>
-        </div>
-      </div>
-
-       <div class="form-group">
-        <label class="control-label">
-        Sectors this startup belongs to</label>
-        <tags-input ng-model="selectedStartup.sectors" display-property="name"
-          placeholder="Add a sector" 
-          replace-spaces-with-dashes="true"
-          add-from-autocomplete-only="false">
-          <auto-complete 
-            source="loadSectors()" 
-            min-length="0"
-            debounce-delay="0"
-            max-results-to-show="10">
-          </auto-complete>
-        </tags-input>
-        <span class="btn btn-xs btn-default cursor" 
-          ng-click ="updateStartup('sectors', selectedStartup.sectors)" >
-          <i class="fa fa-check"></i>
-        </span> &nbsp;
-        <span class="btn btn-xs btn-default cursor"><i class="fa fa-times"></i></span>
-        <small>*<em>To add new sector not in list typr the sector and put a comma (,)</em></small>
-      </div>
-
     </div>
   </div>
 
