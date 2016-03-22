@@ -269,15 +269,29 @@ app.post('/api/startup/create', ensureAuthenticated, function (req, res) {
 
 /**
  * Get Startups 
+  var re = new RegExp(req.params.search, 'i');
+
+  app.User.find().or([{ 'firstName': { $regex: re }}, { 'lastName': { $regex: re }}]).sort('title', 1).exec(function(err, users) {
+      res.json(JSON.stringify(users));
+  });
  */
 app.get('/api/startups', ensureAuthenticated, function (req, res) {
+  var re = new RegExp('', 'i');
+  var sortObject = {};
+  var stype = req.query.sortBy||'createdAt';
+  var sdir = req.query.sortDir|| 1;
+  sortObject[stype] = sdir;
   var startupProjection = {
     name: true,
     description: true,
     location: true,
     sectors:true 
   };
-  Startup.find({}, startupProjection, function (err, startups) {
+  Startup.find()
+  .or([{ 'name': { $regex: re }}, { 'description': { $regex: re }}, { 'sectors': { $regex: re }}])
+  .select(startupProjection)
+  .sort(sortObject)
+  .exec(function(err, startups) {
     if (err)
       return res.status(400).send({message: 'no startups found'});
     return res.send(startups);

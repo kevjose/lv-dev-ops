@@ -1,7 +1,15 @@
 angular.module('MyApp')
   .factory('StartupService', function($http) {
     return {
-      getStartups: function() {
+      getStartups: function(req) {
+        if(req)
+          return $http.get('/api/startups',{
+              params:{
+                "sortBy":req.sortBy?req.sortBy:'', 
+                "sortDir": req.sortDir?req.sortDir:''
+              }
+            }
+          );
         return $http.get('/api/startups');
       },
       createStartup: function(data) {

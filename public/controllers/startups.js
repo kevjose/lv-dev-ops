@@ -16,6 +16,37 @@ angular.module('MyApp')
       });
     }
 
+    $scope.sortFilter = function(sortBy, sortDir){
+      $scope.isStartupsFetching = true;
+      if(sortBy == 'name'){
+        $scope.sortByLocation = null;
+      }
+      else if(sortBy == 'location'){
+        $scope.sortByName = null;
+      }
+      var req ={
+        sortBy: sortBy,
+        sortDir: sortDir
+      }
+      StartupService.getStartups(req)
+      .then(function (response) {
+          var order = (sortDir == 1)?'increasing':'decreasing'
+          toastr.success('Startups in '+order+' order of '+sortBy);
+          $scope.startups = response.data;
+          $scope.isStartupsFetching = false;
+          if(sortBy == 'name'){
+            $scope.sortByName = !$scope.sortByName;
+          }
+          else if(sortBy == 'location'){
+            $scope.sortByLocation = !$scope.sortByLocation;
+          }
+      })
+      .catch(function (response) {
+          toastr.clear();
+          toastr.error(response.data.message, response.status);
+      });
+    }
+
     $scope.gotoStartup = function (id){
       $state.go('dashboard.startup',{id:id});
     }
