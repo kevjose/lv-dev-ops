@@ -18,9 +18,31 @@
           <thead>
             <tr>
               <th>Options</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Location</th>
+              <th>
+                Name
+                <button class="btn btn-xs btn-primary" 
+                  ng-hide="sortByName" ng-click="sortFilter('name',1);">
+                  <i class="fa fa-sort-alpha-asc"></i>
+                </button>
+                 <button class="btn btn-xs btn-warning" 
+                  ng-show="sortByName" ng-click="sortFilter('name',-1);">
+                  <i class="fa fa-sort-alpha-desc"></i>
+                </button>
+              </th>
+              <th>
+                Description
+              </th>
+              <th>
+                Location
+                <button class="btn btn-xs btn-primary" 
+                  ng-hide="sortByLocation" ng-click="sortFilter('location',1);">
+                  <i class="fa fa-sort-alpha-asc"></i>
+                </button>
+                 <button class="btn btn-xs btn-warning" 
+                  ng-show="sortByLocation" ng-click="sortFilter('location',-1);">
+                  <i class="fa fa-sort-alpha-desc"></i>
+                </button>
+              </th>
               <th>Sectors</th>
             </tr>
           </thead>
