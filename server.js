@@ -118,6 +118,13 @@ var startupSchema = new mongoose.Schema({
 
 var Startup = mongoose.model('Startup', startupSchema);
 
+var projectSchema = new mongoose.Schema({
+});
+
+var Project = mongoose.model('Project', projectSchema)
+
+
+
 mongoose.connect(config.MONGO_URI);
 mongoose.connection.on('error', function (err) {
     console.log('Error: Could not connect to MongoDB. Did you forget to run `mongod`?'.red);
@@ -493,6 +500,14 @@ app.put('/api/google-play/details', ensureAuthenticated, function(req, res){
   });
 });
 
+
+app.get('/api/projects', function (req, res) {
+  Project.find({},{'_id': 0, 'school_state': 1, 'resource_type': 1, 'poverty_level': 1, 'date_posted': 1, 'total_donations': 1, 'funding_status': 1, 'grade_level': 1 }, function (err, projects) {
+    if(err)
+      return res.send(err);
+    return res.send(projects);
+  });
+});
 /*
  |--------------------------------------------------------------------------
  | Start the Server
