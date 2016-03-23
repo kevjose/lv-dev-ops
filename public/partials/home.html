@@ -1,36 +1,69 @@
 <div class="container">
   <div class="panel panel-default">
-    <div class="panel-heading">Home Page</div>
+    <div class="panel-heading">Donors Choose Org Data visualization</div>
     <div class="panel-body">
-      <div class="row">
-        <div class="col-sm-6">
-          <h2>Heading</h2>
+      <div class="row col-md-12 ">
+        <div id="page">
 
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus,
-            tellus ac cursus commodo, tortor mauris condimentum nibh, ut
-            fermentum massa justo sit amet risus. Etiam porta sem malesuada
-            magna mollis euismod. Donec sed odio dui.</p>
+        <div class="container">
 
-          <p><a class="btn btn-primary" href="#">View details »</a></p>
-        </div>
-        <div class="col-sm-6">
-          <div class="embed-responsive embed-responsive-16by9">
-            <iframe class="embed-responsive-item" src="https://player.vimeo.com/video/138954117" width="500"height="281" frameborder="0"
-              webkitallowfullscreen mozallowfullscreen allowfullscreen>
-            </iframe>
-            <p>
-              <a href="https://vimeo.com/138954117">GoPlanr Promo Video</a> 
-              from 
-              <a href="https://vimeo.com/user43763400">kevin</a> on 
-              <a href="https://vimeo.com">Vimeo</a>.
-            </p>
+          <div class="row" style="width:90%;">
+            <div class="" id="menuselect">
+              <div class="">  <strong> State Selector </strong> </div>         
+            </div>
+            <br><br>
+            <div class="2u chart-wrapper" id="total-projects">
+              <div class="chart-title">  <strong> Total Donation Count </strong> </div>         
+            </div>
+            <div class="2u chart-wrapper" id="net-donations">
+              <div class="chart-title">  <strong> Net Donations ($) </strong> </div>         
+            </div>
+
+
+            <div class="3u dc-data-count dc-chart" id="row-selection">
+              <span class="filter-count">_</span> selected out of <span class="total-count">_</span> records |
+              <span>
+                <a href='javascript:dc.filterAll();dc.redrawAll();'><font color="#33CC99">Reset All</font></a>
+              </span>
+            </div>
+              
+
           </div>
-        </div>
+
+
+          <div class="row" style="width:90%;">
+            <div class=""  id="date-chart">
+              <div class="chart-title bold"> <strong> Number of Donations </strong></div>
+
+            </div>
+            <div class="" id="resource-chart">
+              <div class="chart-title">  <strong> Donation Count for Resources </strong> </div>             
+
+            </div>
+            <div class="" id="funding-chart">
+              <div class="chart-title">  <strong> Funding Status </strong> </div>         
+            </div>
+          </div>
+
+          <div class="row" style="width:90%;">
+            <div class="" id="grade-chart">
+              <div class="chart-title">  <strong> Donation Count by Grade </strong> </div>
+            </div>
+            <div class="" id="poverty-chart">
+              <div class="chart-title"><strong> Donation Count by Poverty Level</strong></div>
+            </div>
+            <div class="" id="state-donations">
+              <div class="chart-title">  <strong> Donation Amount by State ($) </strong> </div>
+            </div>
+          </div>
+
+        </div>  
+      </div>
       </div>
     </div>
   </div>
 </div>
 <div class="text-center">
-  <a class="btn btn-default" href="#"><i class="ion-social-github"></i> GoPlanr project</a>
+  <a class="btn btn-default" href="#"><i class="ion-social-github"></i> LvDevOps project</a>
 </div>
 </div>
