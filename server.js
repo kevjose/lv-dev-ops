@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var colors = require('colors');
 var cors = require('cors');
 var express = require('express');
+var compression = require('compression')
 var logger = require('morgan');
 var jwt = require('jwt-simple');
 var moment = require('moment');
@@ -144,6 +145,7 @@ if (app.get('env') === 'production') {
         protocol == 'https' ? next() : res.redirect('https://' + req.hostname + req.url);
     });
 }
+app.use(compression());
 app.use(express.static(path.join(__dirname, '/public')));
 
 /*
