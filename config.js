@@ -1,5 +1,4 @@
 module.exports = {
-    TOKEN_SECRET: 'JWT Token Secret',
-    MONGO_URI:'mongodb://kevin:opensesm@ds021299.mlab.com:21299/lv-dev-ops'
-    //MONGO_URI:'mongodb://localhost:27017/lv-dev'
+  TOKEN_SECRET: 'Your Sceret Key',
+  MONGO_URI:'mongodb://localhost:27017/lv-dev'
 };
